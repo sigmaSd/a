@@ -1,0 +1,82 @@
+name: Release libs
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "tag name"
+        required: true
+  
+jobs:
+  build:
+    name: Release libs
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+
+    - uses: goto-bus-stop/setup-zig@v1
+      with:
+        version: 0.9.0
+
+    - name: Build
+      uses: actions-rs/cargo@v1
+      with:
+        command: build
+        args: --release
+
+    - name: Release MacOS lib1
+      if: runner.os == 'MacOS'
+      run: |
+        mv target/release/liba.dylib liba_x86_64.dylib
+
+    - name: Release MacOS lib2
+      if: runner.os == 'MacOS'
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: liba_x86_64.dylib
+        tag: ${{ github.event.inputs.tag }}
+        overwrite: true
+
+    - name: Install cargo-zigbuild
+      if: runner.os == 'Linux'
+      run: |
+        cargo install cargo-zigbuild
+
+    - name: Release MacOS arm lib1
+      if: runner.os == 'Linux'
+      run: |
+        rustup target add aarch64-apple-darwin
+        cargo zigbuild --release --target aarch64-apple-darwin
+        mv target/aarch64-apple-darwin/release/liba.dylib liba_aarch64.dylib
+
+    - name: Release MacOS arm lib2
+      if: runner.os == 'Linux'
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: liba_aarch64.dylib
+        tag: ${{ github.event.inputs.tag }}
+        overwrite: true
+
+    - name: Release Linux lib
+      if: runner.os == 'Linux'
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: target/release/liba.so
+        tag: ${{ github.event.inputs.tag }}
+        overwrite: true
+
+    - name: Release Windows lib
+      if: runner.os == 'Windows'
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: src-rust/target/release/a.dll
+        tag: ${{ github.event.inputs.tag }}
+        overwrite: true
