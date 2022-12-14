@@ -54,13 +54,13 @@ jobs:
     #    cargo zigbuild --release --target aarch64-apple-darwin
     #    mv target/aarch64-apple-darwin/release/libg.dylib libg_aarch64.dylib
 
-    - name: Upload MacOS aarch64
-      if: runner.os == 'Linux'
-      uses: svenstaro/upload-release-action@v2
-      with:
-        file: libg_aarch64.dylib
-        tag: ${{ github.event.inputs.tag }}
-        overwrite: true
+    # - name: Upload MacOS aarch64
+    #   if: runner.os == 'Linux'
+    #   uses: svenstaro/upload-release-action@v2
+    #   with:
+    #     file: libg_aarch64.dylib
+    #     tag: ${{ github.event.inputs.tag }}
+    #     overwrite: true
 
     - name: Release Linux lib
       if: runner.os == 'Linux'
