@@ -88,7 +88,6 @@ jobs:
       run: |
         libUrl=https://github.com/$GITHUB_REPOSITORY/releases/download/${{ github.event.inputs.tag }}
         deno run -A -r https://deno.land/x/deno_bindgen/cli.ts --release=$libUrl
-        git push
 
     - name: Commit bindings
       run: |
