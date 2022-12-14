@@ -84,7 +84,7 @@ jobs:
     - name: Generate bindings
       run: |
         libUrl=https://github.com/$GITHUB_REPOSITORY/releases/download/${{ github.event.inputs.tag }}
-        deno run -r https://deno.land/x/deno_bindgen/cli.ts --release=$libUrl
+        deno run -A -r https://deno.land/x/deno_bindgen/cli.ts --release=$libUrl
         git add .
         git commit -m "update bindings to ${{ github.event.inputs.tag }}"
         git push
