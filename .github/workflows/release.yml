@@ -17,6 +17,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+        fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
 
     - uses: actions-rs/toolchain@v1
       with:
@@ -85,7 +88,18 @@ jobs:
       run: |
         libUrl=https://github.com/$GITHUB_REPOSITORY/releases/download/${{ github.event.inputs.tag }}
         deno run -A -r https://deno.land/x/deno_bindgen/cli.ts --release=$libUrl
-        git add .
-        git commit -m "update bindings to ${{ github.event.inputs.tag }}"
         git push
+
+    - name: Commit bindings
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add bindings.ts
+        git commit -m "update bindings to ${{ github.event.inputs.tag }}"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
 
