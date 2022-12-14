@@ -24,10 +24,6 @@ jobs:
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
-    #uncomment to build for macos arm
-    #- uses: goto-bus-stop/setup-zig@v1
-    #  with:
-    #    version: 0.9.0
 
     - name: Build
       uses: actions-rs/cargo@v1
@@ -49,6 +45,10 @@ jobs:
         overwrite: true
 
     #uncomment to build for macos arm
+    #- uses: goto-bus-stop/setup-zig@v1
+    #  with:
+    #    version: 0.9.0
+
     #- name: Build MacOS aarch64 lib
     #  if: runner.os == 'Linux'
     #  run: |
@@ -81,12 +81,14 @@ jobs:
         tag: ${{ github.event.inputs.tag }}
         overwrite: true
 
+    #uncomment to automaticly generate bindings
     - name: Setup Deno
       uses: denoland/setup-deno@v1
 
     - name: Generate bindings
       run: |
         libUrl=https://github.com/$GITHUB_REPOSITORY/releases/download/${{ github.event.inputs.tag }}
+        touch src/lib.rs # Required to trigger cargo build correctly (to generate bindings.json)
         deno run -A -r https://deno.land/x/deno_bindgen/cli.ts --release=$libUrl
 
     - name: Commit bindings
