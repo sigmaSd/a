@@ -1,4 +1,4 @@
-name: Release libs
+name: Release
 
 on:
   push:
@@ -7,11 +7,11 @@ on:
 
 jobs:
   build:
-    name: Release binary
+    name: Release
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        [ubuntu-latest]
+        os: [ubuntu-latest]
 
     steps:
     - uses: actions/checkout@v2
