@@ -1,0 +1,38 @@
+name: Release libs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Release binary
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        [ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+
+    - name: Setup Deno
+      if: runner.os == 'Linux'
+      uses: denoland/setup-deno@v1
+
+    - name: run user build script
+      run: |
+        deno run -A userBuild.ts
+
+    - name: Upload artifactss
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: target/release/helix
+        overwrite: true
