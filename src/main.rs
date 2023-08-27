@@ -25,7 +25,9 @@ fn main() {
 
     // Release any handles owned by the slave: we don't need it now
     // that we've spawned the child.
-    drop(pair.slave);
+    if !cfg!(windows) {
+        drop(pair.slave);
+    }
 
     // Read the output in another thread.
     // This is important because it is easy to encounter a situation
