@@ -13,6 +13,7 @@ fn main() {
         })
         .unwrap();
 
+    dbg!(std::process::Command::new("deno").arg("--version").spawn());
     let mut cmd = if cfg!(windows) {
         let mut cmd = CommandBuilder::new("powershell");
         // cmd.args(["/C", "deno"]);
