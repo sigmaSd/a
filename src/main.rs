@@ -14,8 +14,8 @@ fn main() {
         .unwrap();
 
     let mut cmd = if cfg!(windows) {
-        let mut cmd = CommandBuilder::new("cmd");
-        cmd.args(["/C", "deno"]);
+        let mut cmd = CommandBuilder::new("powershell");
+        cmd.args(["-Command", "deno"]);
         cmd
     } else {
         CommandBuilder::new("deno")
