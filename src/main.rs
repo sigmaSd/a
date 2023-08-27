@@ -1,7 +1,3 @@
-//! This is a conceptually simple example that spawns the `whoami` program
-//! to print your username.  It is made more complex because there are multiple
-//! pipes involved and it is easy to get blocked/deadlocked if care and attention
-//! is not paid to those pipes!
 use portable_pty::{CommandBuilder, NativePtySystem, PtySize, PtySystem};
 use std::sync::mpsc::channel;
 
@@ -76,10 +72,6 @@ fn main() {
             });
         }
     }
-
-    // Wait for the child to complete
-    // println!("child status: {:?}", child.wait().unwrap());
-    dbg!(4);
 
     // Take care to drop the master after our processes are
     // done, as some platforms get unhappy if it is dropped
