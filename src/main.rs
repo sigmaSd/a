@@ -87,7 +87,7 @@ fn main() {
     drop(pair.master);
 
     // Now wait for the output to be read by our reader thread
-    loop {
+    for _ in 0..5 {
         let _ = dbg!(rx.recv());
         std::thread::sleep_ms(100);
     }
