@@ -14,8 +14,8 @@ fn main() {
         .unwrap();
 
     let mut cmd = if cfg!(windows) {
-        let mut cmd = CommandBuilder::new("powershell");
-        cmd.args(["-Command", "deno"]);
+        let mut cmd = CommandBuilder::new(r"C:\hostedtoolcache\windows\deno\1.36.3\x64\deno.exe");
+        // cmd.args(["-Command", "deno"]);
         cmd
     } else {
         CommandBuilder::new("deno")
@@ -86,7 +86,7 @@ fn main() {
 
     // Now wait for the output to be read by our reader thread
     for _ in 0..5 {
-        let _ = dbg!(rx.recv());
+        dbg!(rx.recv().unwrap());
         std::thread::sleep_ms(100);
     }
 }
