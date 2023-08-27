@@ -88,7 +88,7 @@ fn main() {
 
     // Now wait for the output to be read by our reader thread
     loop {
-        let _ = dbg!(rx.try_recv());
+        let _ = dbg!(rx.recv());
         std::thread::sleep_ms(100);
     }
 }
