@@ -14,10 +14,10 @@ fn main() {
         .unwrap();
 
     let mut cmd = if cfg!(windows) {
-        let mut cmd = CommandBuilder::new("cmd");
-        cmd.args(["/C", "deno"]);
+        let mut cmd = CommandBuilder::new("powershell");
+        // cmd.args(["/C", "deno"]);
         // let mut cmd = CommandBuilder::new(r"C:\hostedtoolcache\windows\deno\1.36.3\x64\deno.exe");
-        // cmd.args(["-Command", "deno"]);
+        cmd.args(["-Command", "deno"]);
         cmd
     } else {
         CommandBuilder::new("deno")
