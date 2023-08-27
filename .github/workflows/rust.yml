@@ -20,12 +20,12 @@ jobs:
     steps:
     - name: Setup repo
       uses: actions/checkout@v3
-    - if: runner.os == 'Windows'
-      run: (Get-Command -Name "deno").Source
 
     - uses: denoland/setup-deno@v1
       with:
         deno-version: v1.x
+    - if: runner.os == 'Windows'
+      run: (Get-Command -Name "deno").Source
 
     - uses: actions/checkout@v3
     - name: Run
