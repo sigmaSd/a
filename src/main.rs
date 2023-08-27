@@ -18,7 +18,8 @@ fn main() {
         .unwrap();
 
     let mut cmd = CommandBuilder::new("deno");
-    let mut child = pair.slave.spawn_command(cmd).unwrap();
+    cmd.env("NO_COLOR", "1");
+    let _child = pair.slave.spawn_command(cmd).unwrap();
 
     // Release any handles owned by the slave: we don't need it now
     // that we've spawned the child.
@@ -31,10 +32,13 @@ fn main() {
     let (tx, rx) = channel();
     let mut reader = pair.master.try_clone_reader().unwrap();
     std::thread::spawn(move || {
-        // Consume the output from the child
-        let mut s = String::new();
-        reader.read_to_string(&mut s).unwrap();
-        tx.send(s).unwrap();
+        loop {
+            // Consume the output from the child
+            let mut s = [0; 512];
+            let n = reader.read(&mut s).unwrap();
+            tx.send(String::from_utf8_lossy(&s[..n]).to_string())
+                .unwrap();
+        }
     });
 
     {
@@ -68,12 +72,14 @@ fn main() {
             // data to the stdin of the child in a different thread.
             std::thread::spawn(move || {
                 writer.write_all(to_write.as_bytes()).unwrap();
+                dbg!(4);
             });
         }
     }
 
     // Wait for the child to complete
-    println!("child status: {:?}", child.wait().unwrap());
+    // println!("child status: {:?}", child.wait().unwrap());
+    dbg!(4);
 
     // Take care to drop the master after our processes are
     // done, as some platforms get unhappy if it is dropped
@@ -81,14 +87,8 @@ fn main() {
     drop(pair.master);
 
     // Now wait for the output to be read by our reader thread
-    let output = rx.recv().unwrap();
-
-    // We print with escapes escaped because the windows conpty
-    // implementation synthesizes title change escape sequences
-    // in the output stream and it can be confusing to see those
-    // printed out raw in another terminal.
-    print!("output: ");
-    for c in output.escape_debug() {
-        print!("{}", c);
+    loop {
+        let _ = dbg!(rx.try_recv());
+        std::thread::sleep_ms(100);
     }
 }
