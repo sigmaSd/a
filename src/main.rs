@@ -13,7 +13,13 @@ fn main() {
         })
         .unwrap();
 
-    let mut cmd = CommandBuilder::new("deno");
+    let mut cmd = if cfg!(windows) {
+        let mut cmd = CommandBuilder::new("cmd");
+        cmd.args(["/C", "deno"]);
+        cmd
+    } else {
+        CommandBuilder::new("deno")
+    };
     cmd.env("NO_COLOR", "1");
     let _child = pair.slave.spawn_command(cmd).unwrap();
 
