@@ -13,10 +13,11 @@ fn main() {
         })
         .unwrap();
 
+    dbg!(std::env::var("PATH"));
     dbg!(std::process::Command::new("deno").arg("--version").spawn());
     let mut cmd = if cfg!(windows) {
         let mut cmd = CommandBuilder::new("deno");
-        cmd.env("PATH", std::env::var("PATH").unwrap());
+        // cmd.env("PATH", std::env::var("PATH").unwrap());
         // // cmd.args(["/C", "deno"]);
         // // let mut cmd = CommandBuilder::new(r"C:\hostedtoolcache\windows\deno\1.36.3\x64\deno.exe");
         // cmd.args(["-Command", "deno"]);
