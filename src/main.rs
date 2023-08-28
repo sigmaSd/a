@@ -2,6 +2,8 @@ use portable_pty::{CommandBuilder, NativePtySystem, PtySize, PtySystem};
 use std::sync::mpsc::channel;
 
 fn main() {
+    env_logger::init();
+
     let pty_system = NativePtySystem::default();
 
     let pair = pty_system
